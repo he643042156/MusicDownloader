@@ -29,7 +29,7 @@ void ScrollLabel::setScrollText(Song song)
     m_timer->stop();
     m_curIndex = 0;//µ±Ç°½ÇÂë
     m_rightIndex = 0;
-    m_showText = QString(QStringLiteral("%1  %2  %3")).arg(song.name).arg(song.singer).arg(gPlaySrcStrMap[song.src]);
+    m_showText = QString(QStringLiteral("%1  %2  %3")).arg(song.name).arg(song.singer).arg(song.src);
     QFont f = QFont("Microsoft YaHei", 13, QFont::Bold);
     QFontMetrics fm(f);
     QRect rec = fm.boundingRect(m_showText);

@@ -1,6 +1,9 @@
 #include "OnlineMusicManager.h"
-#include "qqMusic.h"
 #include "baidumusic.h"
+#include <QDir>
+#include <QDirIterator>
+#include <QMessageBox>
+#include "PyScriptMusic.h"
 
 OnlineMusicManager::OnlineMusicManager(QObject *parent):
     QObject(parent)
@@ -9,17 +12,16 @@ OnlineMusicManager::OnlineMusicManager(QObject *parent):
     m_musicSrcList.clear();
     m_finishedCount = 0;
     m_sugCount = 0;
-    OnlineMusic *pQQMusic = new qqMusic(this);
-    OnlineMusic *pBAIDUMusic = new BaiduMusicAdapter(this);
 
-    m_musicSrcList << pQQMusic;
-//                   << pBAIDUMusic;
-
-    foreach (auto src, m_musicSrcList) {
-        connect(src, &OnlineMusic::getSuggestionListComplete, this, &OnlineMusicManager::slot_srcGetSugComplete);
-//        connect(src, &OnlineMusic::searchStart, this, &OnlineMusicManager::searchStart);
-        connect(src, &OnlineMusic::searchFinished, this, &OnlineMusicManager::slot_srcSearchFinished);
-//        connect(src, &OnlineMusic::singleSearchFinished, this, &OnlineMusicManager::singleSearchFinished);
+//    qDebug()<<"current applicationDirPath: "<<QCoreApplication::applicationDirPath();
+//    qDebug()<<"current currentPath: "<<QDir::currentPath();
+    //检索script目录下的py文件,生成对应音乐源
+    auto pyFileList = findPyFileFromPath(QCoreApplication::applicationDirPath()+"/pyScript/", QStringLiteral("*.py"));
+    foreach (auto fileName, pyFileList) {
+        auto pMusic = new PyScriptMusic(fileName, this);
+        connect(pMusic, &OnlineMusic::getSuggestionListComplete, this, &OnlineMusicManager::slot_srcGetSugComplete);
+        connect(pMusic, &OnlineMusic::searchFinished, this, &OnlineMusicManager::slot_srcSearchFinished);
+        m_musicSrcList.append(pMusic);
     }
 }
 
@@ -34,6 +36,12 @@ void OnlineMusicManager::startSearch(const QString &keyword, int page)
 {
     foreach (auto src, m_musicSrcList) {
         src->startSearch(keyword, page);
+    }
+    if(m_musicSrcList.isEmpty()){
+        QMessageBox msg;
+        msg.setText(QStringLiteral("没有在线音乐搜索引擎."));
+        msg.exec();
+        return;
     }
     emit searchStart();
 }
@@ -70,4 +78,30 @@ void OnlineMusicManager::slot_srcGetSugComplete(QStringList suggestion)
         m_sugList.clear();
         m_sugCount = 0;
     }
+}
+
+QStringList OnlineMusicManager::findPyFileFromPath(const QString &strFilePath, const QString filtersStr)
+{
+    QStringList retFilelist;//找到的文件存入此队列
+    retFilelist.clear();
+    if (strFilePath.isEmpty())
+    {
+        return retFilelist;
+    }
+    QDir dir;
+    QStringList filters;
+    filters << filtersStr;
+    dir.setPath(strFilePath);
+    dir.setNameFilters(filters);//添加过滤器
+    QDirIterator iter(dir,QDirIterator::Subdirectories);
+    while (iter.hasNext())
+    {
+        iter.next();
+        QFileInfo info=iter.fileInfo();
+        if (info.isFile())
+        {
+            retFilelist.append(info.baseName());
+        }
+    }
+    return retFilelist;
 }

@@ -168,7 +168,7 @@ class BaiduMusicAdapter:public OnlineMusic
     Q_OBJECT
 public:
     BaiduMusicAdapter(QObject *parent = nullptr):
-        OnlineMusic(_baiduMusic, parent),
+        OnlineMusic(parent),
         m_pMusic(new BaiduMusic(this))
     {
         connect(m_pMusic, &BaiduMusic::searchComplete, this, &BaiduMusicAdapter::getResult);
@@ -209,7 +209,7 @@ private:
                 auto map = item.toMap()["songItem"].toMap();
 
                 Song tmpSong;
-                tmpSong.src = playSrc();
+                tmpSong.src = QStringLiteral("百度音乐");
                 tmpSong.name = map.value("sname").toString();
                 tmpSong.singer = map.value("singer").toString();
                 tmpSong.downLink = QStringLiteral("努力破解中...");

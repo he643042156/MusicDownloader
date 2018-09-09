@@ -13,5 +13,7 @@
         <file>image/skin/qss/style.qss</file>
         <file>image/skin/qss/style_old.qss</file>
         <file>image/skin/qss/WhiteStyle.qss</file>
+        <file>image/ntes.png</file>
+        <file>image/qq.png</file>
     </qresource>
 </RCC>

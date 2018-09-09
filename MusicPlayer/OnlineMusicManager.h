@@ -41,6 +41,8 @@ private:
     QStringList m_sugList;
     int m_finishedCount;
     int m_sugCount;
+
+    QStringList findPyFileFromPath(const QString &strFilePath, const QString filtersStr);
 };
 
 #endif // ONLINEMUSICMANAGER_H

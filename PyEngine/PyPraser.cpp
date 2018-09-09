@@ -15,108 +15,130 @@ PyPraser::PyPraser():m_isInitSuccess(false)
     m_isInitSuccess = true;
 }
 
-PyPraser::PyPraser(QString fileName):m_isInitSuccess(false)
-{
-    Py_Initialize();
-    //如果初始化失败，返回
-    if(!Py_IsInitialized()){
-        qDebug()<< QStringLiteral("python库初始化失败");
-        Py_Finalize();
-        m_isInitSuccess = false;
-        return;
-    }
-    m_pModule = PyImport_ImportModule(fileName.toStdString().c_str());
-    m_isInitSuccess = true;
-}
-
 PyPraser::~PyPraser()
 {
     if(m_isInitSuccess)
         Py_Finalize();
 }
 
-bool PyPraser::setPyFile(QString fileName)
+int PyPraser::setPyFile(QString fileName)
 {
     if(!m_isInitSuccess)
         return false;
-
-    m_pModule = PyImport_ImportModule(fileName.toStdString().c_str());
-    if(!m_pModule)
+    int moduleIndex = m_pModuleList.size();
+    m_mutex.lock();
+    auto pModule = PyImport_ImportModule(fileName.toStdString().c_str());
+    m_mutex.unlock();
+    if(!pModule)
     {
         qDebug() << QStringLiteral("python模块加载失败");
-        return false;
+        return -1;
     }
-    return true;
+    m_pModuleList.append(pModule);
+    m_objfuncList.append(pyobjMap());//占位
+    return moduleIndex;
 }
 
-bool PyPraser::initFuncObjToMap(QString funcName)
+bool PyPraser::initFuncObjToMap(int index, QString funcName)
 {
     if(!m_isInitSuccess)
         return false;
 
-    if(m_pModule == NULL || m_funcObjMap.keys().contains(funcName))
+    auto pModule = m_pModuleList.at(index);
+    if(pModule == NULL || m_objfuncList[index].keys().contains(funcName))
         return false;
-    PyObject *pFunc = PyObject_GetAttrString(m_pModule, funcName.toStdString().c_str());
+    m_mutex.lock();
+    PyObject *pFunc = PyObject_GetAttrString(pModule, funcName.toStdString().c_str());
+    m_mutex.unlock();
     if(pFunc == NULL)
         return false;
-    m_funcObjMap.insert(funcName, pFunc);
+    m_objfuncList[index].insert(funcName, pFunc);
     return true;
 }
 
-int PyPraser::initFuncListToMap(QStringList funcList)
+int PyPraser::initFuncListToMap(int index, QStringList funcList)
 {
-    if(!m_isInitSuccess)
+    if(!m_isInitSuccess || m_pModuleList.size() < index || index < 0)
         return 0;
 
     int retCount = 0;
     foreach (auto str, funcList) {
-        if(initFuncObjToMap(str))
+        if(initFuncObjToMap(index, str))
             retCount++;
     }
     return retCount;
 }
 
-PyObject *PyPraser::getFuncObjByName(QString funcName)
+PyObject *PyPraser::getFuncObjByName(int index, QString funcName)
 {
     if(!m_isInitSuccess)
         return NULL;
 
-    if(m_funcObjMap.keys().contains(funcName))
-        return m_funcObjMap[funcName];
+    if(m_objfuncList[index].keys().contains(funcName))
+        return m_objfuncList[index][funcName];
     else
         return NULL;
 }
 
-//PyObject *PyPraser::callInitFunc(QString name, ...)
-//{
-////    va_list ap;
-////    va_start(ap, count);
-////    int sum = 0;
-////    for(int i = 0; i < count; i++)
-////        sum += va_arg(ap, int);
-
-//////    PyObject_CallObject(m_funcObjMap[name], Py_BuildValue("(s)", QString(QStringLiteral("黄种人")).toStdString().c_str()))
-
-////    va_end(ap);
-//    return NULL;
-//}
-
-bool PyPraser::callInitFunc(QString name, QString str)
+bool PyPraser::callInitFunc(int index, QString name, QString str)
 {
     if(!m_isInitSuccess)
         return false;
-
-    PyObject_CallObject(m_funcObjMap[name], StringToPyObj(str));
+    auto funcPyObjectMap = m_objfuncList[index];
+    m_mutex.lock();
+    PyObject_CallObject(funcPyObjectMap[name], StringToPyObj(str));
+    m_mutex.unlock();
     return true;
 }
 
-QStringList PyPraser::callInitFunc(QString name)
+QStringList PyPraser::callInitFunc(int index, QString name)
 {
+    QStringList retList;
+    retList.clear();
     if(!m_isInitSuccess)
-        return QStringList();
+        return retList;
 
-    auto pRet = PyObject_CallObject(m_funcObjMap[name], NULL);
-    return GetStringFromPyListObject(pRet);
+    m_mutex.lock();
+    auto list = PyObject_CallObject(m_objfuncList[index][name], NULL);
+    if(list == NULL)
+        return retList;
+
+    int list_len = PyObject_Size(list);//列表长度40
+    PyObject *list_item = NULL;//python类型的列表元素
+    for (int i = 0; i < list_len; i++)
+    {
+        list_item = PyList_GetItem(list, i);//根据下标取出python列表中的元素
+        PyObject* bytes = PyUnicode_AsUTF8String(list_item);
+        char *file_name = PyBytes_AsString(bytes);
+        retList.append(QString(file_name));
+    }
+    m_mutex.unlock();
+
+    return retList;
+}
+
+QString PyPraser::callInitFuncRetStr(int index, QString name)
+{
+    QStringList retList;
+    retList.clear();
+    if(!m_isInitSuccess)
+        return QString();
+    m_mutex.lock();
+    auto list = PyObject_CallObject(m_objfuncList[index][name], NULL);
+    if(list == NULL)
+        return QString();
+
+    int list_len = PyObject_Size(list);//列表长度40
+    PyObject *list_item = NULL;//python类型的列表元素
+    for (int i = 0; i < list_len; i++)
+    {
+        list_item = PyList_GetItem(list, i);//根据下标取出python列表中的元素
+        PyObject* bytes = PyUnicode_AsUTF8String(list_item);
+        char *file_name = PyBytes_AsString(bytes);
+        retList.append(QString(file_name));
+    }
+    m_mutex.unlock();
+    return retList[0];
 }
 
 PyObject *PyPraser::StringToPyObj(QString str)
@@ -133,26 +155,4 @@ PyObject *PyPraser::IntToPyObj(int val)
         return NULL;
 
     return Py_BuildValue("(i)", QString::number(val).toStdString().c_str());
-}
-
-QStringList PyPraser::GetStringFromPyListObject(PyObject *list) const
-{
-    if(!m_isInitSuccess)
-        return QStringList();
-
-    QStringList retList;
-    retList.clear();
-    if(list == NULL)
-        retList.clear();
-
-    int list_len = PyObject_Size(list);//列表长度40
-    PyObject *list_item = NULL;//python类型的列表元素
-    for (int i = 0; i < list_len; i++)
-    {
-        list_item = PyList_GetItem(list, i);//根据下标取出python列表中的元素
-        PyObject* bytes = PyUnicode_AsUTF8String(list_item);
-        char *file_name = PyBytes_AsString(bytes);
-        retList.append(QString(file_name));
-    }
-    return retList;
 }

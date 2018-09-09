@@ -11,14 +11,14 @@ class OnlineMusic : public QThread
 {
     Q_OBJECT
 public:
-    explicit OnlineMusic(MusicSrc src, QObject *parent = nullptr);
+    explicit OnlineMusic(QObject *parent = nullptr);
 
     //开始搜索,搜索完毕以信号发出
     virtual void startSearch(const QString& keyword, int page = 1);
     //获取关键字关联
     virtual void getSuggestion(QString keyword) = 0;
-    //当前播放器标识
-    MusicSrc playSrc() const;
+    //设置播放器标识
+    void setPlaySrc(QString src);
     //当前标识字符串
     QString  playSrcStr() const;
 signals:
@@ -39,7 +39,7 @@ private:
     QString m_keyWord;
     int m_searchPage;
     bool m_isSearch;
-    MusicSrc m_playerSrc;
+    QString m_src;
 };
 
 #endif // ONLINEMUSIC_H

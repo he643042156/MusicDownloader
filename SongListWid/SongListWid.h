@@ -21,7 +21,7 @@ public:
         QStandardItem* itemSinger = new QStandardItem(add.singer);
         QStandardItem* itemTime = new QStandardItem(add.time);
         QStandardItem* itemLink = new QStandardItem(add.downLink);
-        QStandardItem* itemFrom = new QStandardItem(gPlaySrcStrMap[add.src]);
+        QStandardItem* itemFrom = new QStandardItem(add.src);
         QStandardItem* itemOper = new QStandardItem();
 
         rowItems.append(itemSongName);

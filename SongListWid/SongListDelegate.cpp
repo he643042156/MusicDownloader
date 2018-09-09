@@ -23,7 +23,7 @@ void SongListDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
     if (!buttons) {
         QStyleOptionButton* button1 = new QStyleOptionButton();
         //button1->rect = option.rect.adjusted(4, 4, -(option.rect.width() / 2 + 4) , -4); //
-        button1->text = QStringLiteral("播放");
+        button1->text = QStringLiteral("收藏");
         button1->state |= QStyle::State_Enabled;
 
         QStyleOptionButton* button2 = new QStyleOptionButton();
@@ -69,14 +69,14 @@ bool SongListDelegate::editorEvent(QEvent *event, QAbstractItemModel *model, con
             QPair<QStyleOptionButton*, QStyleOptionButton*>* btns = m_btns.value(index);
             if (btns->first->rect.contains(e->x(), e->y())) {
                 btns->first->state &= (~QStyle::State_Sunken);
-                if(btns->first->text.contains(QStringLiteral("播放"))){
-//                    FreeMusicPlayer::getInstance().StartMusic(getSongInfoFromIndex(index));
-                    btns->first->text = QStringLiteral("暂停");
-                }
-                else{
-//                    FreeMusicPlayer::getInstance().suspendMusic();
-                    btns->first->text = QStringLiteral("播放");
-                }
+//                if(btns->first->text.contains(QStringLiteral("收藏"))){
+////                    FreeMusicPlayer::getInstance().StartMusic(getSongInfoFromIndex(index));
+////                    btns->first->text = QStringLiteral("暂停");
+//                }
+//                else{
+////                    FreeMusicPlayer::getInstance().suspendMusic();
+//                    btns->first->text = QStringLiteral("播放");
+//                }
 
 //                showMsg(tr("btn1 column %1").arg(index.column()));
             } else if(btns->second->rect.contains(e->x(), e->y())) {
@@ -118,7 +118,7 @@ Song SongListDelegate::getSongInfoFromIndex(const QModelIndex &index)
 
     column = SongListWid::listHeaderStr.indexOf(QStringLiteral("来源"));
     tmpIndex = index.model()->index(row, column);
-    ret.src = index.model()->data(tmpIndex,Qt::DisplayRole).value<MusicSrc>();
+    ret.src = index.model()->data(tmpIndex,Qt::DisplayRole).value<QString>();
 
     return ret;
 }

@@ -1,22 +1,18 @@
 #include "OnlineMusic.h"
 
-OnlineMusic::OnlineMusic(MusicSrc src, QObject *parent) :
+OnlineMusic::OnlineMusic(QObject *parent) :
     QThread(parent),
-    m_playerSrc(src),
     m_keyWord(QString("")),
-    m_isSearch(false)
+    m_isSearch(false),
+    m_src(QStringLiteral("δ֪"))
 {
 
-}
-
-MusicSrc OnlineMusic::playSrc() const
-{
-    return m_playerSrc;
 }
 
 QString OnlineMusic::playSrcStr() const
 {
-    return gPlaySrcStrMap[m_playerSrc];
+//    return gPlaySrcStrMap[m_playerSrc];
+    return m_src;
 }
 
 void OnlineMusic::run()
@@ -35,4 +31,9 @@ void OnlineMusic::startSearch(const QString &keyword, int page)
     m_keyWord = keyword;
     m_searchPage = page;
     this->start();
+}
+
+void OnlineMusic::setPlaySrc(QString src)
+{
+    m_src = src;
 }

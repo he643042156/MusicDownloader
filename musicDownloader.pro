@@ -42,13 +42,11 @@ FORMS += \
 
 HEADERS += \
     MusicPlayer/FreeMusicPlayer.h \
-    MusicPlayer/qqmusic.h \
     SongListWid/QProgressIndicator.h \
     SongListWid/SongListWid.h \
     mainwindow.h \
     musicCommon.h \
     SongListWid/SongListDelegate.h \
-    MusicPlayer/PlayModeFactory.h \
     ControlWid/animationprogressbar.h \
     ControlWid/ControlWid.h \
     ControlWid/ringsprogressbar.h \
@@ -61,17 +59,15 @@ HEADERS += \
     SearchLineEditor.h \
     MusicPlayer/OnlineMusic.h \
     MusicPlayer/OnlineMusicManager.h \
-    MusicPlayer/ntesCloudMusic.h
+    MusicPlayer/PyScriptMusic.h
 
 SOURCES += \
     MusicPlayer/FreeMusicPlayer.cpp \
-    MusicPlayer/qqmusic.cpp \
     SongListWid/QProgressIndicator.cpp \
     SongListWid/SongListWid.cpp \
     main.cpp \
     mainwindow.cpp \
     SongListWid/SongListDelegate.cpp \
-    MusicPlayer/PlayModeFactory.cpp \
     ControlWid/animationprogressbar.cpp \
     ControlWid/ControlWid.cpp \
     ControlWid/ringsprogressbar.cpp \
@@ -84,7 +80,7 @@ SOURCES += \
     SearchLineEditor.cpp \
     MusicPlayer/OnlineMusic.cpp \
     MusicPlayer/OnlineMusicManager.cpp \
-    MusicPlayer/ntesCloudMusic.cpp
+    MusicPlayer/PyScriptMusic.cpp
 
 RESOURCES += \
     image.qrc

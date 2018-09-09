@@ -15,7 +15,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
     m_listWid = dynamic_cast<SongListWid *>(ui->widSongList);
     connect(m_listWid, &SongListWid::clickedSong, &FreeMusicPlayer::getInstance(), &FreeMusicPlayer::slot_clikedPlay);
-
     connect(&OnlineMusicManager::getInstance(), &OnlineMusicManager::searchFinished, this, &MainWindow::on_onLineMusicSearchFinished);
 }
 
