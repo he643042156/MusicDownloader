@@ -1,0 +1,17 @@
+<RCC>
+    <qresource prefix="/">
+        <file>image/progress_back.png</file>
+        <file>image/progress_front.png</file>
+        <file>image/radius_back.png</file>
+        <file>image/radius_front.png</file>
+        <file>image/sequence_animate.png</file>
+        <file>image/icon_player.png</file>
+        <file>image/last_player.png</file>
+        <file>image/next_player.png</file>
+        <file>image/player_pause.png</file>
+        <file>image/skin/qss/DarkStyle.qss</file>
+        <file>image/skin/qss/style.qss</file>
+        <file>image/skin/qss/style_old.qss</file>
+        <file>image/skin/qss/WhiteStyle.qss</file>
+    </qresource>
+</RCC>
