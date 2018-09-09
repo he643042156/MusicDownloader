@@ -1,0 +1,2 @@
+# MusicDownloader
+这是一个利用QT开发调用python脚本的在线音乐播放器
