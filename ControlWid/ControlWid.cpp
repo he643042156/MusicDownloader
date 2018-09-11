@@ -8,7 +8,7 @@ ControlWid::ControlWid(QWidget *parent) :
     m_playFlag(false)
 {
     ui->setupUi(this);
-    ui->toolButtonPlay->setChecked(true);
+    //    ui->toolButtonPlay->setChecked(true);
 
     m_Progressbar = dynamic_cast<RingsProgressbar *>(ui->widgetBar);
 
@@ -20,8 +20,15 @@ ControlWid::ControlWid(QWidget *parent) :
 
     connect(&FreeMusicPlayer::getInstance(), &FreeMusicPlayer::playStarted,
             this, [&](){
-                ui->toolButtonPlay->setIcon(QIcon(":/image/player_pause.png"));
-                m_playFlag = true;
+        ui->toolButtonPlay->setIcon(QIcon(":/image/player_pause.png"));
+        m_playFlag = true;
+    });
+
+    connect(&FreeMusicPlayer::getInstance(), &FreeMusicPlayer::playListEnd,
+            this, [&](){
+        ui->toolButtonPlay->setIcon(QIcon(":/image/icon_player.png"));
+        m_playFlag = false;
+        ui->labelSongInfo->setScrollText(QStringLiteral(""));
     });
 
     connect(&FreeMusicPlayer::getInstance(), &FreeMusicPlayer::playComplete,

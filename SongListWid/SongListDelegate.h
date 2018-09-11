@@ -2,6 +2,8 @@
 #define SONGLISTDELEGATE_H
 
 #include <QStyledItemDelegate>
+#include <QPixmap>
+#include <QPushButton>
 #include "musicCommon.h"
 
 class SongListDelegate : public QStyledItemDelegate
@@ -31,7 +33,17 @@ private:
     QString getDownLinkFromIndex(const QModelIndex &index);
     Song getSongInfoFromIndex(const QModelIndex &index);
 
+    void paintProgress(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index);
+    void paintButton(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index);
+
     void showMsg(QString str);
+
+    QPixmap m_openFilePixmap;
+    QPixmap m_openFileDisablePixmap;
+
+    QPushButton *m_button;
+    QStyleOptionButton* m_fileButton;
+    QStyleOptionProgressBarV2 *m_progressBarOption;
 };
 
 #endif // SONGLISTDELEGATE_H

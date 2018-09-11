@@ -42,8 +42,9 @@ public:
 
     void setPlayMode(QMediaPlaylist::PlaybackMode mode);
 
-    //×´Ì¬²éÑ¯
+    qint64 getDuration(QString url);
 
+    //×´Ì¬²éÑ¯
     bool isPause();
 public slots:
     void slot_clikedPlay(int currentSong, SongList list);
@@ -56,6 +57,7 @@ signals:
     void playComplete();
     void playStatus(QString);
     void playError(QString);
+    void playListEnd();
 
     void currentSongChanged(Song);
 

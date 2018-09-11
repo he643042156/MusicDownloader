@@ -45,5 +45,6 @@ QStringList PyModule::getDownloadLink()
 
 QString PyModule::getName()
 {
-    return QStringLiteral("δ֪");//PyPraser::getInstance().callInitFuncRetStr(m_moduleIndex, QString("getName"));
+    return QStringLiteral("δ֪");
+//    return PyPraser::getInstance().callInitFuncRetStr(m_moduleIndex, QString("getName"));
 }

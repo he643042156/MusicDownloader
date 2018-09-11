@@ -13,8 +13,6 @@ OnlineMusicManager::OnlineMusicManager(QObject *parent):
     m_finishedCount = 0;
     m_sugCount = 0;
 
-//    qDebug()<<"current applicationDirPath: "<<QCoreApplication::applicationDirPath();
-//    qDebug()<<"current currentPath: "<<QDir::currentPath();
     //检索script目录下的py文件,生成对应音乐源
     auto pyFileList = findPyFileFromPath(QCoreApplication::applicationDirPath()+"/pyScript/", QStringLiteral("*.py"));
     foreach (auto fileName, pyFileList) {

@@ -25,6 +25,7 @@ private:
 
 protected:
     void mousePressEvent(QMouseEvent *ev) Q_DECL_OVERRIDE;
+    void keyPressEvent(QKeyEvent *event);
 };
 
 class PopListView:public QListView

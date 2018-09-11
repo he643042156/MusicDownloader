@@ -14,6 +14,7 @@ void PyScriptMusic::getSuggestion(QString keyword)
 
 SongList PyScriptMusic::SearchFunc(QString keyword, int page)
 {
+    Q_UNUSED(page)
     SongList list;
     list.clear();
     m_pyModule->setSearchKeyWord(keyword);

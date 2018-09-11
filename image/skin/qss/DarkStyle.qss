@@ -961,7 +961,6 @@ QTableView::item:selected:active, QTreeView::item:selected:active, QListView::it
     color: #eff0f1;
 }
 
-
 QHeaderView
 {
     font-size: 17px;

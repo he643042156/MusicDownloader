@@ -9,9 +9,17 @@ OnlineMusic::OnlineMusic(QObject *parent) :
 
 }
 
+OnlineMusic::~OnlineMusic()
+{
+    if(this->isRunning()){
+        this->terminate();
+        this->wait(1000);
+    }
+}
+
 QString OnlineMusic::playSrcStr() const
 {
-//    return gPlaySrcStrMap[m_playerSrc];
+    //    return gPlaySrcStrMap[m_playerSrc];
     return m_src;
 }
 

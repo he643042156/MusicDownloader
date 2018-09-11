@@ -1,6 +1,7 @@
 #include "SearchLineEditor.h"
 #include "OnlineMusicManager.h"
 #include <qDebug>
+#include <QKeyEvent>
 
 
 SearchLineEditor::SearchLineEditor(QWidget *parent):
@@ -12,6 +13,7 @@ SearchLineEditor::SearchLineEditor(QWidget *parent):
     this->setCompleter(m_completer);
     m_completer->setModel(m_model);
     m_completer->setFilterMode(Qt::MatchContains);
+//    this->setFocusPolicy(Qt::StrongFocus);
 
     connect(this, &QLineEdit::textEdited, this, &SearchLineEditor::getOnlineSuggestion);
     connect(&OnlineMusicManager::getInstance(), &OnlineMusicManager::getSuggestionListComplete, this, &SearchLineEditor::setCompleteList);
@@ -37,7 +39,7 @@ void SearchLineEditor::setCompleteList(QStringList str)
 {
     m_model->setStringList(str);
 
-//    m_completer->popup.boundingRect(string).width();
+    //    m_completer->popup.boundingRect(string).width();
     m_completer->complete(QRect(0,0,150,0));
 }
 
@@ -49,5 +51,16 @@ void SearchLineEditor::getOnlineSuggestion(const QString &text)
 void SearchLineEditor::mousePressEvent(QMouseEvent *ev)
 {
     QLineEdit::mousePressEvent(ev);
-//    this->getOnlineSuggestion(this->text());
+    //    this->getOnlineSuggestion(this->text());
+}
+
+void SearchLineEditor::keyPressEvent(QKeyEvent *event)
+{
+    if(event->key() == Qt::Key_Enter || event->key() == Qt::Key_Return){
+        QString keyWord = this->text();
+        OnlineMusicManager::getInstance().startSearch(keyWord);
+    }
+    else{
+        QLineEdit::keyPressEvent(event);
+    }
 }

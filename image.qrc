@@ -15,5 +15,12 @@
         <file>image/skin/qss/WhiteStyle.qss</file>
         <file>image/ntes.png</file>
         <file>image/qq.png</file>
+        <file>image/folder_open.png</file>
+        <file>image/folder_open_disabled.png</file>
+        <file>image/btn_circle_single.png</file>
+        <file>image/btn_listcircle.png</file>
+        <file>image/btn_listOnce.png</file>
+        <file>image/btn_listrandom.png</file>
+        <file>image/freeMusic.png</file>
     </qresource>
 </RCC>

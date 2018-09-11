@@ -8,7 +8,8 @@ const QStringList SongListWid::listHeaderStr = {
     {QStringLiteral("时长")},
     {QStringLiteral("链接")},
     {QStringLiteral("来源")},
-    {QStringLiteral("操作")}
+    {QStringLiteral("操作")},
+    {QStringLiteral("进度")},
 };
 
 SongListWid::SongListWid(QWidget *parent):
@@ -20,7 +21,7 @@ SongListWid::SongListWid(QWidget *parent):
     this->setItemDelegate(new SongListDelegate(this));
 
     connect(this, &QTableView::clicked, this, [&](const QModelIndex &index){
-        if(index.column() != listHeaderStr.indexOf(QStringLiteral("操作"))){
+        if(index.column() != listHeaderStr.indexOf(QStringLiteral("操作")) && index.column() != listHeaderStr.indexOf(QStringLiteral("进度"))){
             auto song = m_model->list().at(index.row());
             emit clickedOneLine(song);
             emit clickedSong(index.row(), this->playList());
@@ -30,7 +31,7 @@ SongListWid::SongListWid(QWidget *parent):
     m_pSearchIndicator = new QProgressIndicator(this);
     connect(&OnlineMusicManager::getInstance(), &OnlineMusicManager::searchStart, m_pSearchIndicator, &QProgressIndicator::startAnimation);
     connect(&OnlineMusicManager::getInstance(), &OnlineMusicManager::searchFinished, [&](SongList){
-            m_pSearchIndicator->stopAnimation();
+        m_pSearchIndicator->stopAnimation();
     });
 }
 
@@ -67,6 +68,6 @@ void SongListWid::stopIndicatorAnimation()
 
 int SongListWid::getSongIndexFromList(Song song)
 {
-//    return m_model->index().key(song);
+    //    return m_model->index().key(song);
     return 0;
 }

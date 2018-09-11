@@ -13,7 +13,7 @@
   <property name="windowTitle">
    <string>Frame</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout" stretch="5,1,0,0,3,1">
+  <layout class="QVBoxLayout" name="verticalLayout" stretch="8,0,2,2,0,2,0">
    <item>
     <widget class="RingsProgressbar" name="widgetBar" native="true"/>
    </item>
@@ -31,9 +31,52 @@
     </spacer>
    </item>
    <item>
-    <widget class="ScrollLabel" name="labelSongInfo">
+    <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,5,1">
+     <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="ScrollLabel" name="labelSongInfo">
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer_2">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="PlayModeLabel" name="label">
      <property name="text">
       <string/>
+     </property>
+     <property name="pixmap">
+      <pixmap resource="../image.qrc">:/image/btn_listOnce.png</pixmap>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
      </property>
     </widget>
    </item>
@@ -74,7 +117,7 @@
          <normalon>:/image/icon_player.png</normalon>:/image/icon_player.png</iconset>
        </property>
        <property name="checkable">
-        <bool>true</bool>
+        <bool>false</bool>
        </property>
        <property name="checked">
         <bool>false</bool>
@@ -120,6 +163,11 @@
    <class>ScrollLabel</class>
    <extends>QLabel</extends>
    <header>ScrollLabel.h</header>
+  </customwidget>
+  <customwidget>
+   <class>PlayModeLabel</class>
+   <extends>QLabel</extends>
+   <header>PlayModeLabel.h</header>
   </customwidget>
  </customwidgets>
  <resources>

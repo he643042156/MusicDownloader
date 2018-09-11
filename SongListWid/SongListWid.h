@@ -23,13 +23,12 @@ public:
         QStandardItem* itemLink = new QStandardItem(add.downLink);
         QStandardItem* itemFrom = new QStandardItem(add.src);
         QStandardItem* itemOper = new QStandardItem();
+        QStandardItem* itemProg = new QStandardItem();
 
-        rowItems.append(itemSongName);
-        rowItems.append(itemSinger);
-        rowItems.append(itemTime);
-        rowItems.append(itemLink);
-        rowItems.append(itemFrom);
-        rowItems.append(itemOper);
+        rowItems << itemSongName << itemSinger \
+                 << itemTime << itemLink << itemFrom \
+                 << itemOper << itemProg;
+
         QStandardItemModel::appendRow(rowItems);
         m_songIndexMap.insert(m_list.size(), add);
         m_list.append(add);

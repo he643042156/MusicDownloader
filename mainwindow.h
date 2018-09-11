@@ -4,6 +4,8 @@
 #include <QMainWindow>
 #include "musicCommon.h"
 #include "SongListWid.h"
+#include "CustomSystemTrayIcon.h"
+#include <QLabel>
 
 namespace Ui {
 class MainWindow;
@@ -24,9 +26,14 @@ private slots:
 
     void on_onLineMusicSearchFinished(SongList list);
 
+protected:
+    void changeEvent(QEvent * event);
+
 private:
     Ui::MainWindow *ui;
     SongListWid *m_listWid;
+    QLabel *m_statusLabel;
+    CustomSystemTrayIcon *m_systemTray;
 };
 
 #endif // MAINWINDOW_H

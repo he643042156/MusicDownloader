@@ -59,7 +59,9 @@ HEADERS += \
     SearchLineEditor.h \
     MusicPlayer/OnlineMusic.h \
     MusicPlayer/OnlineMusicManager.h \
-    MusicPlayer/PyScriptMusic.h
+    MusicPlayer/PyScriptMusic.h \
+    ControlWid/PlayModeLabel.h \
+    CustomSystemTrayIcon.h
 
 SOURCES += \
     MusicPlayer/FreeMusicPlayer.cpp \
@@ -80,7 +82,11 @@ SOURCES += \
     SearchLineEditor.cpp \
     MusicPlayer/OnlineMusic.cpp \
     MusicPlayer/OnlineMusicManager.cpp \
-    MusicPlayer/PyScriptMusic.cpp
+    MusicPlayer/PyScriptMusic.cpp \
+    ControlWid/PlayModeLabel.cpp \
+    CustomSystemTrayIcon.cpp
 
 RESOURCES += \
     image.qrc
+
+RC_FILE = icon.rc

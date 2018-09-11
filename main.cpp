@@ -4,6 +4,7 @@
 #include <qDebug>
 #include <QString>
 #include <QFile>
+#include "CustomSystemTrayIcon.h"
 
 
 int main(int argc, char *argv[])
@@ -11,6 +12,7 @@ int main(int argc, char *argv[])
     qRegisterMetaType<SongList>();
     qRegisterMetaType<Song>();
     QApplication a(argc, argv);
+
     MainWindow w;
     w.show();
 

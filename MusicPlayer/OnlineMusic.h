@@ -12,7 +12,7 @@ class OnlineMusic : public QThread
     Q_OBJECT
 public:
     explicit OnlineMusic(QObject *parent = nullptr);
-
+    ~OnlineMusic();
     //开始搜索,搜索完毕以信号发出
     virtual void startSearch(const QString& keyword, int page = 1);
     //获取关键字关联

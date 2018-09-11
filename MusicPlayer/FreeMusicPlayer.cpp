@@ -56,8 +56,13 @@ FreeMusicPlayer::FreeMusicPlayer(QObject *parent):
     //当前播放歌曲发生改变
     connect(&m_playList, &QMediaPlaylist::currentIndexChanged,
             this, [&](int position){
-
-        if(position < m_songInfoList.size())
+        if(position == -1){
+            m_pMusicPlayer->stop();
+            m_playList.clear();
+            emit playListEnd();
+            emit playStatus(QStringLiteral("当前已到列表末尾"));
+        }
+        else if(position < m_songInfoList.size())
             emit currentSongChanged(m_songInfoList.at(position));
     });
 
@@ -65,13 +70,7 @@ FreeMusicPlayer::FreeMusicPlayer(QObject *parent):
     connect(m_pMusicPlayer, QOverload<QMediaPlayer::Error>::of(&QMediaPlayer::error),
         [=](QMediaPlayer::Error error){
         if(error != QMediaPlayer::NoError){
-//            QMessageBox msg;
-//            msg.setText(m_errorStrMap[error]);
-//            msg.exec();
-//            m_pMusicPlayer->stop();
-//            m_playList.setPlaybackMode();
             emit playError(m_errorStrMap[error]);
-            qDebug() << m_errorStrMap[error];
         }
     });
 }
@@ -95,7 +94,6 @@ void FreeMusicPlayer::initPlayList(SongList list)
 void FreeMusicPlayer::initPlayList(Song song)
 {
     m_playList.addMedia(QUrl(song.downLink));
-//    m_playList.addMedia(QUrl("http://music.163.com/song/media/outer/url?id=866018207.mp3"));
     m_songInfoList.append(song);
 }
 
@@ -143,7 +141,7 @@ bool FreeMusicPlayer::pausePlay()
 bool FreeMusicPlayer::continuePlay()
 {
     m_pMusicPlayer->setPosition(m_currentSong.pausePos);
-    return this->startPlay();
+    return this->startPlay(m_playList.playbackMode());
 }
 
 void FreeMusicPlayer::next()
@@ -155,8 +153,16 @@ void FreeMusicPlayer::next()
         msg.exec();
         return;
     }
+    qDebug() << m_playList.playbackMode();
+    if(m_playList.currentIndex() >= m_playList.mediaCount()-1 && \
+            m_playList.playbackMode() == QMediaPlaylist::Sequential){
+        QMessageBox msg;
+        msg.setText(QString(QStringLiteral("已经是最后一首了")));
+        msg.exec();
+        return;
+    }
     m_playList.next();
-    this->startPlay();
+    this->startPlay(m_playList.playbackMode());
 }
 
 void FreeMusicPlayer::last()
@@ -168,13 +174,25 @@ void FreeMusicPlayer::last()
         msg.exec();
         return;
     }
+    if(m_playList.currentIndex() <= 0 && \
+            m_playList.playbackMode() == QMediaPlaylist::Sequential){
+        QMessageBox msg;
+        msg.setText(QString(QStringLiteral("已经是第一首了")));
+        msg.exec();
+        return;
+    }
     m_playList.previous();
-    this->startPlay();
+    this->startPlay(m_playList.playbackMode());
 }
 
 void FreeMusicPlayer::setPlayMode(QMediaPlaylist::PlaybackMode mode)
 {
     m_playList.setPlaybackMode(mode);
+}
+
+qint64 FreeMusicPlayer::getDuration(QString url)
+{
+    return 0;//m_pMusicPlayer->newMedia(FileUrl ).duration;
 }
 
 bool FreeMusicPlayer::isPause()
@@ -188,7 +206,7 @@ void FreeMusicPlayer::slot_clikedPlay(int currentSong, SongList list)
     if(currentSong < m_playList.mediaCount()){
         m_playList.setCurrentIndex(currentSong);
     }
-    this->startPlay();
+    this->startPlay(m_playList.playbackMode());
 }
 
 void FreeMusicPlayer::slot_gotoPersent(int persent)

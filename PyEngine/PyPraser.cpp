@@ -2,7 +2,8 @@
 #include <stdarg.h>
 #include <qDebug>
 
-PyPraser::PyPraser():m_isInitSuccess(false)
+PyPraser::PyPraser():
+    m_isInitSuccess(false)
 {
     Py_Initialize();
     //如果初始化失败，返回
@@ -17,8 +18,9 @@ PyPraser::PyPraser():m_isInitSuccess(false)
 
 PyPraser::~PyPraser()
 {
-    if(m_isInitSuccess)
+    if(m_isInitSuccess){
         Py_Finalize();
+    }
 }
 
 int PyPraser::setPyFile(QString fileName)
@@ -103,7 +105,7 @@ QStringList PyPraser::callInitFunc(int index, QString name)
     if(list == NULL)
         return retList;
 
-    int list_len = PyObject_Size(list);//列表长度40
+    int list_len = PyObject_Size(list);
     PyObject *list_item = NULL;//python类型的列表元素
     for (int i = 0; i < list_len; i++)
     {
@@ -119,40 +121,28 @@ QStringList PyPraser::callInitFunc(int index, QString name)
 
 QString PyPraser::callInitFuncRetStr(int index, QString name)
 {
-    QStringList retList;
-    retList.clear();
-    if(!m_isInitSuccess)
-        return QString();
+    char retStr[256] = {0};
     m_mutex.lock();
-    auto list = PyObject_CallObject(m_objfuncList[index][name], NULL);
-    if(list == NULL)
-        return QString();
-
-    int list_len = PyObject_Size(list);//列表长度40
-    PyObject *list_item = NULL;//python类型的列表元素
-    for (int i = 0; i < list_len; i++)
-    {
-        list_item = PyList_GetItem(list, i);//根据下标取出python列表中的元素
-        PyObject* bytes = PyUnicode_AsUTF8String(list_item);
-        char *file_name = PyBytes_AsString(bytes);
-        retList.append(QString(file_name));
-    }
+    auto result = PyObject_CallObject(m_objfuncList[index][name], NULL);
+    PyArg_Parse(result, "s", retStr);
     m_mutex.unlock();
-    return retList[0];
+    QString ret(retStr);
+    qDebug() << ret;
+    return ret;
 }
 
 PyObject *PyPraser::StringToPyObj(QString str)
 {
     if(!m_isInitSuccess)
         return NULL;
-
-    return Py_BuildValue("(s)", str.toStdString().c_str());
+    auto ret = Py_BuildValue("(s)", str.toStdString().c_str());
+    return ret;
 }
 
 PyObject *PyPraser::IntToPyObj(int val)
 {
     if(!m_isInitSuccess)
         return NULL;
-
-    return Py_BuildValue("(i)", QString::number(val).toStdString().c_str());
+    auto ret = Py_BuildValue("(i)", QString::number(val).toStdString().c_str());
+    return ret;
 }
